@@ -21,15 +21,20 @@
   },
   "keywords": [
     "litcore",
+    "olf",
     "compiler",
     "parser",
     "ast",
-    "literature"
+    "literature",
+    "open-literature-format"
   ],
   "author": "",
   "license": "MIT",
-  "dependencies": {
-    "@litcore/cli": "^1.0.0",
-    "litcore": "^0.0.1-security"
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
+
