@@ -125,6 +125,13 @@ Ensure all core validation and integration tests run successfully:
 npm test
 ```
 
+## 🚀 CI/CD & Trusted Publishing
+
+This repository is configured with:
+- **GitHub Actions CI (`ci.yml`)**: Automatically runs the entire test suite on every push and pull request across Node.js versions 18, 20, and 22.
+- **npm Trusted Publishing (`publish.yml`)**: Fully secure, tokenless OIDC-based publishing directly to npm when a new GitHub Release is created.
+
 ## 📄 License
 
 MIT
+
