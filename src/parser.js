@@ -10,6 +10,27 @@ export function parse(tokens) {
   };
 
   let currentBlock = null;
+  const blockFingerprintCounts = new Map();
+
+  function hashString(input) {
+    let hash = 2166136261;
+    for (let i = 0; i < input.length; i++) {
+      hash ^= input.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0).toString(36);
+  }
+
+  function computeBlockId(attributes, content) {
+    const stableAttrs = { ...(attributes || {}) };
+    delete stableAttrs.id;
+    delete stableAttrs.litcore_block_id;
+    const normalized = `${JSON.stringify(stableAttrs)}|${content}`;
+    const hash = hashString(normalized);
+    const seen = (blockFingerprintCounts.get(hash) || 0) + 1;
+    blockFingerprintCounts.set(hash, seen);
+    return `b-${hash}-${seen}`;
+  }
 
   function closeCurrentBlock() {
     if (currentBlock) {
@@ -27,10 +48,14 @@ export function parse(tokens) {
         currentBlock.attributes.type = 'plaintext';
       }
 
+      const content = lines.join('\n');
+      const id = currentBlock.attributes.id || computeBlockId(currentBlock.attributes, content);
+
       ast.body.push({
         type: 'block',
+        id,
         attributes: currentBlock.attributes,
-        content: lines.join('\n'),
+        content,
         line: currentBlock.line
       });
 

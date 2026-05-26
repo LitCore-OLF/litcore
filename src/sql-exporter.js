@@ -182,8 +182,12 @@ DELETE FROM blocks WHERE book_id = '${bookId}';\n`);
     } else if (node.type === 'block') {
       blockCount++;
       const id = randomUUID();
-      const blockType = escapeSql(node.attributes.type || 'plaintext');
-      const attrJson = JSON.stringify(node.attributes || {});
+      const attributes = { ...(node.attributes || {}) };
+      if (node.id) {
+        attributes.litcore_block_id = node.id;
+      }
+      const blockType = escapeSql(attributes.type || 'plaintext');
+      const attrJson = JSON.stringify(attributes);
       const content = escapeSql(node.content);
 
       // JSON type casting
