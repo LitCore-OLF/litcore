@@ -1,0 +1,70 @@
+{
+  "metadata": {
+    "title": "Deenyat",
+    "author": "Maulana Abul A'la Maududi",
+    "lang": "ur",
+    "type": "prose"
+  },
+  "body": [
+    {
+      "type": "structure",
+      "name": "chapter",
+      "value": "1",
+      "line": 6
+    },
+    {
+      "type": "structure",
+      "name": "section",
+      "value": "حقیقتِ اسلام (The Reality of Islam)",
+      "line": 7
+    },
+    {
+      "type": "block",
+      "attributes": {
+        "type": "prose",
+        "lang": "ur"
+      },
+      "content": "اسلام کے لغوی معنی اطاعت اور فرمانبرداری کے ہیں۔\nخدا کے قانون کی فرمانبرداری اور اس کے سامنے سر تسلیم خم کرنے کا نام اسلام ہے۔",
+      "line": 9
+    },
+    {
+      "type": "block",
+      "attributes": {
+        "type": "prose",
+        "lang": "ur"
+      },
+      "content": "کائنات کی ہر چیز اپنے دائرہ کار میں خدا کی فرمانبردار ہے۔\nسورج، چاند، درخت اور دریا سب اپنے مقررہ قوانین پر چل رہے ہیں، گویا وہ سب پیدائشی مسلمان ہیں۔",
+      "line": 14
+    },
+    {
+      "type": "block",
+      "attributes": {
+        "type": "prose",
+        "lang": "ur"
+      },
+      "content": "انسان کو اللہ تعالیٰ نے عقل اور ارادہ دیا ہے۔\nاسے حق اور باطل، اطاعت اور سرکشی میں سے کسی ایک کا انتخاب کرنے کی آزادی دی گئی ہے۔",
+      "line": 19
+    },
+    {
+      "type": "structure",
+      "name": "chapter",
+      "value": "2",
+      "line": 24
+    },
+    {
+      "type": "structure",
+      "name": "section",
+      "value": "ایمان کی حقیقت (The Reality of Belief)",
+      "line": 25
+    },
+    {
+      "type": "block",
+      "attributes": {
+        "type": "prose",
+        "lang": "ur"
+      },
+      "content": "ایمان کے معنی سچے دل سے کسی بات پر یقین کرنے کے ہیں۔\nاللہ تعالیٰ کی وحدانیت، اس کے رسولوں، کتابوں، اور آخرت پر سچے دل سے یقین لانے کا نام ایمان ہے۔",
+      "line": 27
+    }
+  ]
+}

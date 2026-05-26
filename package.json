@@ -1,0 +1,35 @@
+{
+  "name": "@litcore/cli",
+  "version": "1.0.2",
+  "description": "API-native compiler and CLI for Open Literature Format (.olf)",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./minidb": "./src/minidb.js"
+  },
+  "files": [
+    "src",
+    "bin",
+    "README.md"
+  ],
+  "bin": {
+    "litcore": "./bin/litcore.js"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  },
+  "keywords": [
+    "litcore",
+    "compiler",
+    "parser",
+    "ast",
+    "literature"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@litcore/cli": "^1.0.0",
+    "litcore": "^0.0.1-security"
+  }
+}

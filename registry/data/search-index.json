@@ -1,0 +1,23 @@
+{
+  "mock": [
+    {
+      "bookId": "mocknovel",
+      "chapterIndex": 1,
+      "blockIndex": 1
+    }
+  ],
+  "novel": [
+    {
+      "bookId": "mocknovel",
+      "chapterIndex": 1,
+      "blockIndex": 1
+    }
+  ],
+  "paragraph": [
+    {
+      "bookId": "mocknovel",
+      "chapterIndex": 1,
+      "blockIndex": 1
+    }
+  ]
+}

@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="viewer-title">LitCore Reader</title>
+  <style>
+    /* Premium CSS Design System (Vanilla CSS with CSS Variables) */
+    :root {
+      /* Theme Variables (Default Light Theme) */
+      --bg-color: #f8fafc;
+      --text-color: #1e293b;
+      --sidebar-bg: #ffffff;
+      --sidebar-border: #e2e8f0;
+      --accent-color: #3b82f6;
+      --accent-rgb: 59, 130, 246;
+      --hover-bg: #f1f5f9;
+      --card-bg: #ffffff;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --transition-speed: 0.2s;
+      
+      /* Typography */
+      --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-serif: 'Georgia', 'Garamond', 'Times New Roman', serif;
+      --font-urdu: 'Jameel Noori Nastaleeq', 'Noto Nastaliq Urdu', 'Urdu Typesetting', 'Microsoft Uighur', serif;
+      
+      --base-font-size: 17px;
+      --active-font-family: var(--font-sans);
+    }
+
+    /* Sepia Theme */
+    [data-theme="sepia"] {
+      --bg-color: #fdf6e3;
+      --text-color: #5c4738;
+      --sidebar-bg: #f5ebcc;
+      --sidebar-border: #e6dbb8;
+      --accent-color: #c05621;
+      --accent-rgb: 192, 86, 33;
+      --hover-bg: #ebdcb2;
+      --card-bg: #faf3e0;
+    }
+
+    /* Dark Theme */
+    [data-theme="dark"] {
+      --bg-color: #0f172a;
+      --text-color: #cbd5e1;
+      --sidebar-bg: #1e293b;
+      --sidebar-border: #334155;
+      --accent-color: #38bdf8;
+      --accent-rgb: 56, 189, 248;
+      --hover-bg: #273549;
+      --card-bg: #1e293b;
+    }
+
+    /* Solarized Theme */
+    [data-theme="solarized"] {
+      --bg-color: #002b36;
+      --text-color: #93a1a1;
+      --sidebar-bg: #073642;
+      --sidebar-border: #586e75;
+      --accent-color: #b58900;
+      --accent-rgb: 181, 137, 0;
+      --hover-bg: #0b4554;
+      --card-bg: #073642;
+    }
+
+    /* Core Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--active-font-family);
+      font-size: var(--base-font-size);
+      line-height: 1.6;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Layout structure */
+    .sidebar {
+      width: 320px;
+      background-color: var(--sidebar-bg);
+      border-right: 1px solid var(--sidebar-border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      height: 100%;
+      transition: transform var(--transition-speed) ease, background-color var(--transition-speed);
+      z-index: 100;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      height: 100%;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Sidebar Components */
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--sidebar-border);
+    }
+
+    .book-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .book-author {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-bottom: 12px;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--sidebar-border);
+      border-radius: 8px;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color var(--transition-speed);
+    }
+
+    .search-box:focus {
+      border-color: var(--accent-color);
+    }
+
+    .sidebar-menu {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 15px;
+    }
+
+    .nav-item {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 6px;
+      color: var(--text-color);
+      text-decoration: none;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+      transition: background-color var(--transition-speed);
+      cursor: pointer;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background-color: var(--hover-bg);
+    }
+    
+    .nav-item.active {
+      font-weight: bold;
+      border-left: 3px solid var(--accent-color);
+      padding-left: 9px;
+    }
+
+    .nav-item.section {
+      padding-left: 24px;
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    /* Top Preference Bar */
+    .pref-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background-color: var(--sidebar-bg);
+      border-bottom: 1px solid var(--sidebar-border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .pref-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .pref-btn {
+      background: var(--hover-bg);
+      border: 1px solid var(--sidebar-border);
+      color: var(--text-color);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: opacity var(--transition-speed);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pref-btn:hover {
+      opacity: 0.9;
+    }
+
+    .theme-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1px solid var(--sidebar-border);
+      cursor: pointer;
+    }
+
+    /* Reading Panel */
+    .reader-body {
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 40px 20px 80px 20px;
+      flex-grow: 1;
+    }
+
+    .book-cover-container {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .book-cover {
+      max-width: 240px;
+      border-radius: 8px;
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Document Structure Styles */
+    h1.chapter-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--sidebar-border);
+      padding-bottom: 10px;
+      line-height: 1.2;
+    }
+
+    h2.section-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-top: 30px;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    /* Paragraph and Block styling */
+    .content-block {
+      margin-bottom: 24px;
+      position: relative;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: background-color var(--transition-speed);
+    }
+
+    .content-block:hover {
+      background-color: var(--hover-bg);
+    }
+
+    .prose-block {
+      text-align: justify;
+      white-space: pre-wrap;
+    }
+
+    /* Poetry verse block styling */
+    .verse-block {
+      white-space: pre-wrap;
+      font-style: italic;
+      padding-left: 20px;
+      border-left: 2px solid var(--accent-color);
+      margin-left: 10px;
+    }
+
+    /* Urdu styling overrides */
+    [lang="ur"] {
+      font-family: var(--font-urdu);
+      direction: rtl;
+      text-align: right;
+      font-size: 1.35em;
+      line-height: 1.8;
+    }
+
+    [lang="ur"].verse-block {
+      border-left: none;
+      border-right: 2px solid var(--accent-color);
+      padding-left: 0;
+      padding-right: 20px;
+      margin-left: 0;
+      margin-right: 10px;
+    }
+
+    /* Anchor/Reference Copy System */
+    .block-anchor {
+      position: absolute;
+      left: -32px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      background: var(--sidebar-bg);
+      border: 1px solid var(--sidebar-border);
+      border-radius: 4px;
+      padding: 4px 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: opacity var(--transition-speed);
+      box-shadow: var(--shadow-sm);
+      color: var(--accent-color);
+      text-decoration: none;
+    }
+
+    [dir="rtl"] .block-anchor {
+      left: auto;
+      right: -32px;
+    }
+
+    .content-block:hover .block-anchor {
+      opacity: 1;
+    }
+
+    /* Tooltip styling */
+    .tooltip {
+      position: absolute;
+      background-color: #334155;
+      color: #ffffff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      bottom: 110%;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity var(--transition-speed);
+    }
+
+    .tooltip.show {
+      opacity: 1;
+    }
+
+    /* Sidebar mobile trigger */
+    .hamburger-btn {
+      display: none;
+    }
+
+    /* Author Theme Overrides injected globally */
+    #custom-author-styles {
+      display: none;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .sidebar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        transform: translateX(-100%);
+      }
+      
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .hamburger-btn {
+        display: block;
+      }
+      
+      .pref-bar {
+        padding: 10px 15px;
+      }
+    }
+  </style>
+  <style id="author-theme">/* Author Custom CSS theme inlined here */</style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1 class="book-title" id="side-book-title">Book Title</h1>
+      <div class="book-author" id="side-book-author">Author Name</div>
+      <input type="text" class="search-box" id="search-box" placeholder="Search book contents...">
+    </div>
+    <nav class="sidebar-menu" id="sidebar-menu">
+      <!-- Generated navigation anchors -->
+    </nav>
+  </aside>
+
+  <!-- Main View -->
+  <main class="main-content" id="main-content">
+    
+    <!-- Top Preference Controls -->
+    <header class="pref-bar">
+      <div class="pref-group">
+        <button class="pref-btn hamburger-btn" id="sidebar-toggle" aria-label="Toggle Sidebar">
+          ☰ Menu
+        </button>
+        <button class="pref-btn" id="font-decrease">A-</button>
+        <button class="pref-btn" id="font-increase">A+</button>
+        <button class="pref-btn" id="font-family-toggle">Change Font</button>
+      </div>
+      
+      <div class="pref-group">
+        <div class="theme-dot" style="background-color: #f8fafc;" onclick="setTheme('light')" title="Light Theme"></div>
+        <div class="theme-dot" style="background-color: #fdf6e3;" onclick="setTheme('sepia')" title="Sepia Theme"></div>
+        <div class="theme-dot" style="background-color: #0f172a;" onclick="setTheme('dark')" title="Dark Theme"></div>
+        <div class="theme-dot" style="background-color: #002b36;" onclick="setTheme('solarized')" title="Solarized Theme"></div>
+      </div>
+    </header>
+
+    <!-- Reader -->
+    <article class="reader-body">
+      <!-- Cover art placeholder inlined -->
+      <div class="book-cover-container" id="cover-container" style="display: none;">
+        <img class="book-cover" id="book-cover" src="" alt="Book Cover">
+      </div>
+      
+      <div id="book-reader-flow">
+        <!-- Main content blocks loaded here dynamically -->
+      </div>
+    </article>
+  </main>
+
+  <!-- Embedded JSON AST data -->
+  <script type="application/json" id="litcore-ast">
+  {
+    "metadata": {
+      "title": "LitCore Sample",
+      "author": "LitCore Team"
+    },
+    "body": [
+      {
+        "type": "structure",
+        "name": "chapter",
+        "value": "1",
+        "line": 1
+      },
+      {
+        "type": "block",
+        "attributes": {
+          "type": "plaintext"
+        },
+        "content": "Use the LitCore CLI 'pack' command to bundle your .olf books into standalone viewer archives.",
+        "line": 2
+      }
+    ]
+  }
+  </script>
+
+  <!-- JS Engine (Resource-friendly and self-contained) -->
+  <script>
+    let astData = {};
+    let isSerif = false;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Load AST
+      try {
+        const rawJson = document.getElementById('litcore-ast').textContent;
+        astData = JSON.parse(rawJson);
+      } catch (e) {
+        console.error('Failed to parse LitCore AST', e);
+        document.getElementById('book-reader-flow').innerHTML = '<p style="color:red">Error loading book data.</p>';
+        return;
+      }
+
+      // 2. Load preferences
+      loadPreferences();
+
+      // 3. Render Title & Metadata
+      const meta = astData.metadata || {};
+      document.title = meta.title || 'LitCore Reader';
+      document.getElementById('side-book-title').textContent = meta.title || 'Untitled';
+      document.getElementById('side-book-author').textContent = meta.author || 'Unknown';
+      document.getElementById('viewer-title').textContent = meta.title || 'LitCore Reader';
+
+      // 4. Render Cover
+      // Expecting cover image in metadata as base64 string
+      if (meta.cover_image) {
+        const coverImg = document.getElementById('book-cover');
+        coverImg.src = meta.cover_image;
+        document.getElementById('cover-container').style.display = 'block';
+      }
+
+      // 5. Render AST body content
+      renderBook(astData.body || []);
+
+      // 6. Hook up controls
+      document.getElementById('font-increase').addEventListener('click', () => adjustFontSize(1));
+      document.getElementById('font-decrease').addEventListener('click', () => adjustFontSize(-1));
+      document.getElementById('font-family-toggle').addEventListener('click', toggleFontFamily);
+      
+      const toggleBtn = document.getElementById('sidebar-toggle');
+      const sidebar = document.getElementById('sidebar');
+      toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+      });
+
+      // Search functionality
+      const searchBox = document.getElementById('search-box');
+      searchBox.addEventListener('input', (e) => {
+        handleSearch(e.target.value.toLowerCase());
+      });
+
+      // Scroll to deep-link anchor if present
+      if (window.location.hash) {
+        setTimeout(() => {
+          const el = document.getElementById(window.location.hash.substring(1));
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 300);
+      }
+    });
+
+    function renderBook(bodyNodes) {
+      const container = document.getElementById('book-reader-flow');
+      const menu = document.getElementById('sidebar-menu');
+      container.innerHTML = '';
+      menu.innerHTML = '';
+
+      let chapterCount = 0;
+      let sectionCount = 0;
+      let blockCount = 0;
+
+      bodyNodes.forEach((node) => {
+        if (node.type === 'structure') {
+          if (node.name === 'chapter') {
+            chapterCount++;
+            sectionCount = 0; // Reset sections in new chapter
+            
+            const id = `chapter-${chapterCount}`;
+            
+            // Render Chapter Title
+            const h1 = document.createElement('h1');
+            h1.className = 'chapter-title';
+            h1.id = id;
+            h1.textContent = node.value;
+            container.appendChild(h1);
+
+            // Add to Navigation
+            const navLink = document.createElement('a');
+            navLink.className = 'nav-item';
+            navLink.href = `#${id}`;
+            navLink.textContent = `${node.value}`;
+            navLink.addEventListener('click', () => {
+              document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+              navLink.classList.add('active');
+              document.getElementById('sidebar').classList.remove('open');
+            });
+            menu.appendChild(navLink);
+          } else if (node.name === 'section') {
+            sectionCount++;
+            
+            const id = `chapter-${chapterCount}-section-${sectionCount}`;
+
+            // Render Section Title
+            const h2 = document.createElement('h2');
+            h2.className = 'section-title';
+            h2.id = id;
+            h2.textContent = node.value;
+            container.appendChild(h2);
+
+            // Add to Navigation
+            const navLink = document.createElement('a');
+            navLink.className = 'nav-item section';
+            navLink.href = `#${id}`;
+            navLink.textContent = node.value;
+            navLink.addEventListener('click', () => {
+              document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+              navLink.classList.add('active');
+              document.getElementById('sidebar').classList.remove('open');
+            });
+            menu.appendChild(navLink);
+          }
+        } else if (node.type === 'block') {
+          blockCount++;
+          const id = `block-${blockCount}`;
+          
+          const div = document.createElement('div');
+          div.className = 'content-block';
+          div.id = id;
+
+          const attrs = node.attributes || {};
+          const isVerse = attrs.type === 'verse';
+          div.classList.add(isVerse ? 'verse-block' : 'prose-block');
+
+          // Language metadata handling
+          if (attrs.lang) {
+            div.setAttribute('lang', attrs.lang);
+            div.setAttribute('dir', attrs.lang === 'ur' ? 'rtl' : 'ltr');
+          }
+
+          // Build Text Content
+          div.textContent = node.content;
+
+          // Build copyable block anchor link
+          const address = `chapter/${chapterCount || 1}/block/${blockCount}`;
+          const anchor = document.createElement('a');
+          anchor.className = 'block-anchor';
+          anchor.href = `#${id}`;
+          anchor.title = `Copy address: ${address}`;
+          anchor.textContent = '🔗';
+          
+          const tooltip = document.createElement('span');
+          tooltip.className = 'tooltip';
+          tooltip.textContent = 'Address Copied!';
+          anchor.appendChild(tooltip);
+
+          anchor.addEventListener('click', (e) => {
+            e.preventDefault();
+            const fullLink = `${window.location.origin}${window.location.pathname}#${id}`;
+            navigator.clipboard.writeText(fullLink).then(() => {
+              tooltip.classList.add('show');
+              setTimeout(() => tooltip.classList.remove('show'), 1500);
+            });
+            // Update URL hash without jumping
+            history.pushState(null, null, `#${id}`);
+          });
+
+          div.appendChild(anchor);
+          container.appendChild(div);
+        }
+      });
+    }
+
+    // Search Engine (client-side, local, instant filtering)
+    function handleSearch(query) {
+      const blocks = document.querySelectorAll('.content-block');
+      if (!query.trim()) {
+        blocks.forEach(b => {
+          b.style.display = 'block';
+          // Clean highlights
+          b.innerHTML = b.textContent;
+          // Re-append anchor
+          reappendAnchor(b);
+        });
+        return;
+      }
+
+      blocks.forEach(b => {
+        const text = b.textContent;
+        const index = text.toLowerCase().indexOf(query);
+        if (index !== -1) {
+          b.style.display = 'block';
+          // Highlight match
+          const rawText = b.textContent;
+          const left = rawText.substring(0, index);
+          const match = rawText.substring(index, index + query.length);
+          const right = rawText.substring(index + query.length);
+          
+          b.innerHTML = `${escapeHtml(left)}<mark style="background-color: var(--accent-color); color: white; border-radius: 2px; padding: 0 2px;">${escapeHtml(match)}</mark>${escapeHtml(right)}`;
+          reappendAnchor(b);
+        } else {
+          b.style.display = 'none';
+        }
+      });
+    }
+
+    function reappendAnchor(b) {
+      const id = b.id;
+      const blockCount = id.split('-')[1];
+      const chapterCount = getChapterOfBlock(b);
+
+      const address = `chapter/${chapterCount}/block/${blockCount}`;
+      const anchor = document.createElement('a');
+      anchor.className = 'block-anchor';
+      anchor.href = `#${id}`;
+      anchor.title = `Copy address: ${address}`;
+      anchor.textContent = '🔗';
+      
+      const tooltip = document.createElement('span');
+      tooltip.className = 'tooltip';
+      tooltip.textContent = 'Address Copied!';
+      anchor.appendChild(tooltip);
+
+      anchor.addEventListener('click', (e) => {
+        e.preventDefault();
+        const fullLink = `${window.location.origin}${window.location.pathname}#${id}`;
+        navigator.clipboard.writeText(fullLink).then(() => {
+          tooltip.classList.add('show');
+          setTimeout(() => tooltip.classList.remove('show'), 1500);
+        });
+        history.pushState(null, null, `#${id}`);
+      });
+      b.appendChild(anchor);
+    }
+
+    function getChapterOfBlock(blockElement) {
+      let prev = blockElement.previousElementSibling;
+      while (prev) {
+        if (prev.classList.contains('chapter-title')) {
+          return prev.id.split('-')[1];
+        }
+        prev = prev.previousElementSibling;
+      }
+      return 1;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // Preferences & Layout Settings
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('litcore-theme', theme);
+    }
+
+    function adjustFontSize(dir) {
+      const currentSize = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--base-font-size'));
+      const newSize = Math.max(12, Math.min(32, currentSize + dir));
+      document.documentElement.style.setProperty('--base-font-size', `${newSize}px`);
+      localStorage.setItem('litcore-font-size', `${newSize}px`);
+    }
+
+    function toggleFontFamily() {
+      isSerif = !isSerif;
+      const fontFamily = isSerif ? 'var(--font-serif)' : 'var(--font-sans)';
+      document.documentElement.style.setProperty('--active-font-family', fontFamily);
+      localStorage.setItem('litcore-serif', isSerif);
+    }
+
+    function loadPreferences() {
+      const theme = localStorage.getItem('litcore-theme') || 'light';
+      setTheme(theme);
+
+      const fontSize = localStorage.getItem('litcore-font-size');
+      if (fontSize) {
+        document.documentElement.style.setProperty('--base-font-size', fontSize);
+      }
+
+      isSerif = localStorage.getItem('litcore-serif') === 'true';
+      const fontFamily = isSerif ? 'var(--font-serif)' : 'var(--font-sans)';
+      document.documentElement.style.setProperty('--active-font-family', fontFamily);
+    }
+  </script>
+</body>
+</html>

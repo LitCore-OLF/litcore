@@ -1,0 +1,10 @@
+{
+  "name": "LitCore Example Repository",
+  "version": "1.0.0",
+  "books": [
+    {
+      "id": "deenyat",
+      "path": "examples/deenyat.olf"
+    }
+  ]
+}
