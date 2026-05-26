@@ -145,3 +145,35 @@ test('LitCore Compiler - Strict Syntax Error - Malformed Block Attribute', () =>
       err.message.includes('Malformed block attribute tag');
   });
 });
+
+test('LitCore Compiler - Stable block IDs are deterministic', () => {
+  const source = `#chapter: 1
+>type: plaintext
+Line one.
+
+>type: plaintext
+Line two.`;
+
+  const ast1 = compile(source);
+  const ast2 = compile(source);
+  const blockIds1 = ast1.body.filter(n => n.type === 'block').map(n => n.id);
+  const blockIds2 = ast2.body.filter(n => n.type === 'block').map(n => n.id);
+
+  assert.deepStrictEqual(blockIds1, blockIds2);
+  assert.strictEqual(new Set(blockIds1).size, blockIds1.length);
+});
+
+test('LitCore Compiler - Duplicate block content still receives unique IDs', () => {
+  const source = `#chapter: 1
+>type: plaintext
+Same line.
+
+>type: plaintext
+Same line.`;
+
+  const ast = compile(source);
+  const blockIds = ast.body.filter(n => n.type === 'block').map(n => n.id);
+
+  assert.strictEqual(blockIds.length, 2);
+  assert.notStrictEqual(blockIds[0], blockIds[1]);
+});

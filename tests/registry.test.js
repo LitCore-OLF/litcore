@@ -54,7 +54,7 @@ test('SQL Exporter - Dialect Specific Generation Correctness', () => {
   assert.match(pgSql, /INSERT INTO books/);
   assert.match(pgSql, /ON CONFLICT \(id\) DO UPDATE SET/);
   assert.match(pgSql, /DELETE FROM structures WHERE book_id = 'testbook';/);
-  assert.match(pgSql, /'\{\"type\":\"plaintext\"\}'::jsonb/); // postgres jsonb type casting
+  assert.match(pgSql, /'\{\"type\":\"plaintext\",\"litcore_block_id\":\"b-[^"]+\"\}'::jsonb/); // postgres jsonb type casting
   assert.match(pgSql, /'single quotes'' to escape/); // double single-quotes escape
 
   // 2. MySQL Dialect
@@ -62,7 +62,7 @@ test('SQL Exporter - Dialect Specific Generation Correctness', () => {
   assert.match(mySql, /ON DUPLICATE KEY UPDATE/);
   assert.match(mySql, /ENGINE=InnoDB/);
   assert.match(mySql, /`order` INT/); // MySQL escaped keyword
-  assert.match(mySql, /'\{\"type\":\"plaintext\"\}'/); // regular JSON literal, no cast
+  assert.match(mySql, /'\{\"type\":\"plaintext\",\"litcore_block_id\":\"b-[^"]+\"\}'/); // regular JSON literal, no cast
   assert.doesNotMatch(mySql, /::jsonb/);
 
   // 3. SQLite Dialect
@@ -115,6 +115,7 @@ test('Developer Server - In-Memory DB & REST API Endpoints', async () => {
     assert.strictEqual(blockRes1.status, 200);
     const blockData1 = await blockRes1.json();
     assert.strictEqual(blockData1.blockIndex, 1);
+    assert.match(blockData1.id, /^b-/);
     assert.strictEqual(blockData1.content, 'This is block number one in chapter 1.');
 
     // Test GET /api/books/testbook/chapters/1/blocks/2

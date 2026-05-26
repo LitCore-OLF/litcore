@@ -48,7 +48,7 @@ function indexBook(bookId, ast, filePath) {
       });
     } else if (node.type === 'block') {
       blockCount++;
-      const id = randomUUID();
+      const id = node.id || randomUUID();
       const blockType = node.attributes.type || 'plaintext';
       
       blocks.push({

@@ -12,6 +12,7 @@ While the web has modern, API-first standards for organizing code (GitHub) and m
 * **Separation of Concerns:** Keep styling completely decoupled from content. Let rendering engines (Viewers) handle dynamic dark mode, fonts, and readability preferences.
 * **Single-File Standalone Viewer (`.olx`):** Package `.olf` content, custom CSS, and cover art into a zero-dependency, self-rendering interactive HTML document.
 * **Notion Webhook Bridge:** Build bridges that translate popular writing formats (Notion Block JSON arrays) into clean `.olf` syntax to capture users where they write.
+* **Stable Block Anchors:** Deterministic `block.id` values are generated at compile-time for durable deep links, citations, and diffs.
 * **High Performance:** Compiles a full 128,000-word book in **under 10 milliseconds** (linear $O(N)$ CPU execution time).
 
 ---
@@ -40,6 +41,14 @@ The Open Literature Format (`.olf`) separates structure and metadata from conten
 کیوں زیاں کار بنوں، سُود فراموش رہوں
     فکرِ فردا نہ کروں، محوِ غمِ دوش رہوں
 ```
+
+---
+
+## 📚 Specification & Roadmap
+
+- OLF spec draft: `docs/olf-spec-v1.md`
+- Practical roadmap: `docs/roadmap.md`
+- Adoption playbook: `docs/adoption-playbook.md`
 
 ---
 
@@ -134,4 +143,3 @@ This repository is configured with:
 ## 📄 License
 
 MIT
-
